@@ -17,5 +17,7 @@ namespace InventarioValidade.Models
 
         [DataType(DataType.Date)]
         public DateTime DataValidade { get; set; }
+
+        public decimal Precounitario { get; set; }
     }
 }
