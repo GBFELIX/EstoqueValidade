@@ -8,7 +8,6 @@ namespace InventarioValidade.Models
         [Required]
         public int Id { get; set; }
 
-        [Required]
         public string Nome { get; set; }
 
         public double Preco { get; set; }

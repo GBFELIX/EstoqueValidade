@@ -9,7 +9,8 @@ using InventarioValidade.Models;
 using InventarioValidade.Views.Data;
 
 namespace InventarioValidade.Controllers
-{
+{   
+
     public class ProdutosController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,10 +20,29 @@ namespace InventarioValidade.Controllers
             _context = context;
         }
 
+        private string CalcularStatusValidade(DateTime dataValidade)
+        {
+            var diasRestantes = (dataValidade - DateTime.Today).Days;
+
+            if (diasRestantes < 0)
+                return "VENCIDO";
+            else if (diasRestantes <= 7)
+                return "PRÓXIMO DO VENCIMENTO";
+            else
+                return "DENTRO DO PRAZO";
+        }
         // GET: Produtos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Produtos.ToListAsync());
+            var produtos = await _context.Produtos.ToListAsync();
+
+            var produtosStatus = produtos.Select(produto => new ProdutoStatus
+            {
+                Produto = produto,
+                StatusValidade = CalcularStatusValidade(produto.DataValidade)
+            }).ToList();
+
+            return View(produtosStatus);
         }
 
         // GET: Produtos/Details/5
@@ -54,7 +74,7 @@ namespace InventarioValidade.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Preco,Quantidade,DataValidade,precounitario")] Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Preco,Quantidade,DataValidade,Precounitario")] Produto produto)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +106,7 @@ namespace InventarioValidade.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Preco,Quantidade,DataValidade,precounitario")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Preco,Quantidade,DataValidade,Precounitario")] Produto produto)
         {
             if (id != produto.Id)
             {
