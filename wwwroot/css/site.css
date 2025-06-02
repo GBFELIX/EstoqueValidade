@@ -20,3 +20,15 @@ html {
 body {
   margin-bottom: 60px;
 }
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+}
+header {
+    background-color:red; 
+    
+}

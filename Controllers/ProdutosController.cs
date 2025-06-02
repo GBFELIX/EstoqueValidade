@@ -6,16 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using InventarioValidade.Models;
-using InventarioValidade.Views.Data;
+using InventarioValidade.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InventarioValidade.Controllers
 {   
 
     public class ProdutosController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ProdutosController(AppDbContext context)
+        public ProdutosController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -31,7 +32,6 @@ namespace InventarioValidade.Controllers
             else
                 return "DENTRO DO PRAZO";
         }
-        // GET: Produtos
         public async Task<IActionResult> Index()
         {
             var produtos = await _context.Produtos.ToListAsync();
@@ -45,7 +45,6 @@ namespace InventarioValidade.Controllers
             return View(produtosStatus);
         }
 
-        // GET: Produtos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -63,15 +62,11 @@ namespace InventarioValidade.Controllers
             return View(produto);
         }
 
-        // GET: Produtos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Produtos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Preco,Quantidade,DataValidade,Precounitario")] Produto produto)
@@ -85,7 +80,7 @@ namespace InventarioValidade.Controllers
             return View(produto);
         }
 
-        // GET: Produtos/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
